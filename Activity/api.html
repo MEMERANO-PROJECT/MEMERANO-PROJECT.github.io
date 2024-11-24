@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digimon Cards</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f3f4f6;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      padding: 20px;
+      margin: 0;
+    }
+
+    #card-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .card {
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      width: 250px;
+      text-align: center;
+    }
+
+    .card img {
+      width: 100%;
+      height: auto;
+    }
+
+    .card-content {
+      padding: 15px;
+    }
+
+    .card-title {
+      font-size: 20px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .card-level {
+      font-size: 16px;
+      color: #555;
+    }
+
+    #loading {
+      font-size: 24px;
+      font-weight: bold;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <h1>Digimon Cards</h1>
+  <div id="loading">Loading...</div>
+  <div id="card-container"></div>
+
+  <script>
+    const cardContainer = document.getElementById('card-container');
+    const loading = document.getElementById('loading');
+
+    function createCard(data) {
+      const card = document.createElement('div');
+      card.className = 'card';
+
+      const image = document.createElement('img');
+      image.src = data.img;
+      image.alt = data.name;
+
+      const content = document.createElement('div');
+      content.className = 'card-content';
+
+      const title = document.createElement('h2');
+      title.className = 'card-title';
+      title.textContent = data.name;
+
+      const level = document.createElement('p');
+      level.className = 'card-level';
+      level.textContent = `Level: ${data.level}`;
+
+      content.appendChild(title);
+      content.appendChild(level);
+      card.appendChild(image);
+      card.appendChild(content);
+
+      return card;
+    }
+
+    // Fetch Digimon data from the API
+    fetch('https://digimon-api.vercel.app/api/digimon')
+      .then(response => response.json())
+      .then(data => {
+        loading.style.display = 'none'; // Hide the loading text
+        data.forEach(digimon => {
+          const card = createCard(digimon);
+          cardContainer.appendChild(card);
+        });
+      })
+      .catch(error => {
+        loading.textContent = 'Failed to load Digimon data.';
+        console.error('Error fetching Digimon data:', error);
+      });
+  </script>
+</body>
+</html>
